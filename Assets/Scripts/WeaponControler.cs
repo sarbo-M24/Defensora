@@ -11,7 +11,9 @@ public enum WeaponFireMode
 public class WeaponController : MonoBehaviour
 {
     [Header("Weapon Configuration")]
-    [SerializeField] private WeaponFireMode fireMode = WeaponFireMode.Automatic;
+    [SerializeField] private WeaponFireMode fireMode =
+        WeaponFireMode.Automatic;
+
     [SerializeField, Min(1)] private int magazineCapacity = 30;
     [SerializeField, Min(1)] private int pelletsPerShot = 1;
     [SerializeField, Min(1f)] private float roundsPerMinute = 600f;
@@ -29,11 +31,9 @@ public class WeaponController : MonoBehaviour
 
     private int currentAmmo;
     private int reserveAmmo;
-
     private bool isFiring;
     private bool isReloading;
     private float nextShotTime;
-
     private Coroutine reloadCoroutine;
 
     public WeaponFireMode FireMode => fireMode;
@@ -55,13 +55,13 @@ public class WeaponController : MonoBehaviour
         currentAmmo = magazineCapacity;
         reserveAmmo = startingReserveAmmo;
 
-        // Finds HitscanShooter on WeaponSystem or another parent.
         hitscanShooter = GetComponentInParent<HitscanShooter>();
 
         if (hitscanShooter == null)
         {
             Debug.LogError(
-                $"{name}: No HitscanShooter found on this object or its parents."
+                $"{name}: No HitscanShooter found on this object or its parents.",
+                this
             );
         }
     }
@@ -85,7 +85,6 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    // Called when the fire button is pressed.
     public void TriggerPressed()
     {
         if (isReloading || isFiring)
@@ -106,7 +105,6 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    // Called when the fire button is released.
     public void TriggerReleased()
     {
         StopFiring();
@@ -125,12 +123,10 @@ public class WeaponController : MonoBehaviour
         currentAmmo--;
 
         Debug.Log(
-            $"{name}: Shot fired. " +
-            $"Ammo: {currentAmmo}/{magazineCapacity}. " +
+            $"{name}: Shot fired. Ammo: {currentAmmo}/{magazineCapacity}. " +
             $"Reserve: {reserveAmmo}"
         );
 
-        // Perform raycast shooting and apply damage.
         if (hitscanShooter != null)
         {
             hitscanShooter.Fire(
@@ -176,8 +172,7 @@ public class WeaponController : MonoBehaviour
         reloadCoroutine = null;
 
         Debug.Log(
-            $"{name}: Reload complete. " +
-            $"Ammo: {currentAmmo}/{magazineCapacity}. " +
+            $"{name}: Reload complete. Ammo: {currentAmmo}/{magazineCapacity}. " +
             $"Reserve: {reserveAmmo}"
         );
     }

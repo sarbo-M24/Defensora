@@ -9,6 +9,11 @@ public class HitscanShooter : MonoBehaviour
     [Header("Performance")]
     [SerializeField, Min(1)] private int hitBufferSize = 16;
 
+    [Header("Projectile Mode")]
+    [SerializeField] private bool useProjectileShots = false;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField, Min(0.1f)] private float bulletSpeed = 80f;
+
     private RaycastHit[] hitBuffer;
     private Transform playerRoot;
 
@@ -17,9 +22,7 @@ public class HitscanShooter : MonoBehaviour
         playerRoot = transform.root;
 
         if (playerCamera == null)
-        {
             playerCamera = Camera.main;
-        }
 
         hitBuffer = new RaycastHit[Mathf.Max(1, hitBufferSize)];
 
@@ -40,6 +43,16 @@ public class HitscanShooter : MonoBehaviour
     {
         if (playerCamera == null)
             return;
+
+        if (useProjectileShots && bulletPrefab == null)
+        {
+            Debug.LogWarning(
+                "HitscanShooter: Projectile mode is enabled, " +
+                "but no bullet prefab is assigned.",
+                this
+            );
+            return;
+        }
 
         pellets = Mathf.Max(1, pellets);
         range = Mathf.Max(0.1f, range);
@@ -63,6 +76,12 @@ public class HitscanShooter : MonoBehaviour
                 ) * forward;
             }
 
+            if (useProjectileShots)
+            {
+                FireProjectile(origin, direction, damage);
+                continue;
+            }
+
             int hitCount = Physics.RaycastNonAlloc(
                 origin,
                 direction,
@@ -72,7 +91,6 @@ public class HitscanShooter : MonoBehaviour
                 QueryTriggerInteraction.Ignore
             );
 
-            // Process hits from nearest to farthest without sorting.
             float nearestDistance = float.MaxValue;
             int nearestIndex = -1;
 
@@ -80,11 +98,8 @@ public class HitscanShooter : MonoBehaviour
             {
                 Transform hitTransform = hitBuffer[j].transform;
 
-                if (hitTransform == null)
-                    continue;
-
-                // Ignore the player's own colliders.
-                if (hitTransform.root == playerRoot)
+                if (hitTransform == null ||
+                    hitTransform.root == playerRoot)
                     continue;
 
                 if (hitBuffer[j].distance < nearestDistance)
@@ -102,24 +117,50 @@ public class HitscanShooter : MonoBehaviour
                     hit.collider.GetComponentInParent<TargetHealth>();
 
                 if (target != null)
-                {
                     target.TakeDamage(damage);
-                }
-
-                // Uncomment temporarily when debugging hit detection:
-                // Debug.Log("Shot hit: " + hit.collider.name);
             }
             else if (hitCount >= hitBuffer.Length)
             {
-                // A full buffer may mean some hits were omitted.
                 Debug.LogWarning(
-                    "HitscanShooter: Hit buffer full. Consider increasing Hit Buffer Size.",
+                    "HitscanShooter: Hit buffer full. Increase Hit Buffer Size.",
                     this
                 );
             }
 
-            // Draw rays only in the Editor when debugging.
             Debug.DrawRay(origin, direction * range, Color.red, 0.1f);
         }
+    }
+
+    private void FireProjectile(
+        Vector3 origin,
+        Vector3 direction,
+        float damage)
+    {
+        GameObject bullet = Instantiate(
+            bulletPrefab,
+            origin,
+            Quaternion.LookRotation(direction)
+        );
+
+        TurretProjectile projectile =
+            bullet.GetComponent<TurretProjectile>();
+
+        if (projectile == null)
+        {
+            Debug.LogError(
+                "The bullet prefab needs the TurretProjectile component.",
+                bullet
+            );
+
+            Destroy(bullet);
+            return;
+        }
+
+        projectile.Initialize(
+            playerRoot.gameObject,
+            direction,
+            damage,
+            bulletSpeed
+        );
     }
 }
