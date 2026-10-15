@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25fe208489dcab6448e9e64da9ada28d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurretController
-  turretType: 0
+  turretType: 1
   detectionRange: 10
   fireRate: 3
   damage: 10

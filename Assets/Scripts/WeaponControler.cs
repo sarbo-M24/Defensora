@@ -22,6 +22,9 @@ public class WeaponController : MonoBehaviour
     [Header("Ammunition")]
     [SerializeField, Min(0)] private int startingReserveAmmo = 90;
 
+    [Tooltip("Reload automatically when the magazine runs dry.")]
+    [SerializeField] private bool autoReload = true;
+
     [Header("Hitscan Settings")]
     [SerializeField, Min(0f)] private float damagePerPellet = 10f;
     [SerializeField, Min(0.1f)] private float weaponRange = 100f;
@@ -75,6 +78,7 @@ public class WeaponController : MonoBehaviour
         {
             StopFiring();
             Debug.Log($"{name}: Magazine empty. Reload required.");
+            TryAutoReload();
             return;
         }
 
@@ -90,19 +94,28 @@ public class WeaponController : MonoBehaviour
         if (isReloading || isFiring)
             return;
 
+        if (currentAmmo <= 0)
+        {
+            Debug.Log($"{name}: Magazine empty. Press R to reload.");
+            TryAutoReload();
+            return;
+        }
+
         if (fireMode == WeaponFireMode.SemiAutomatic)
         {
             FireOneRound();
         }
-        else if (currentAmmo > 0)
+        else
         {
             isFiring = true;
             nextShotTime = Time.time;
         }
-        else
-        {
-            Debug.Log($"{name}: Magazine empty. Press R to reload.");
-        }
+    }
+
+    private void TryAutoReload()
+    {
+        if (autoReload && reserveAmmo > 0)
+            Reload();
     }
 
     public void TriggerReleased()
@@ -136,6 +149,9 @@ public class WeaponController : MonoBehaviour
                 spreadAngle
             );
         }
+
+        if (currentAmmo <= 0)
+            TryAutoReload();
     }
 
     public void Reload()

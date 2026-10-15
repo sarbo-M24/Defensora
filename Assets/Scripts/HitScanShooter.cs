@@ -117,7 +117,7 @@ public class HitscanShooter : MonoBehaviour
                     hit.collider.GetComponentInParent<TargetHealth>();
 
                 if (target != null)
-                    target.TakeDamage(damage);
+                    target.TakeDamage(damage, hit.point, hit.normal);
             }
             else if (hitCount >= hitBuffer.Length)
             {

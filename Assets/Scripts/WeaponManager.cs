@@ -14,7 +14,18 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private InputActionReference shotgunAction;
     [SerializeField] private InputActionReference machineGunAction;
 
+    [Header("Building")]
+    [Tooltip("Firing is suppressed while this is placing a turret. " +
+             "Found automatically if left empty.")]
+    [SerializeField] private ObjectPlacementManager placementManager;
+
     private WeaponController currentWeapon;
+
+    private void Awake()
+    {
+        if (placementManager == null)
+            placementManager = FindFirstObjectByType<ObjectPlacementManager>();
+    }
 
     private void OnEnable()
     {
@@ -97,6 +108,10 @@ public class WeaponManager : MonoBehaviour
 
     private void OnFire(InputAction.CallbackContext context)
     {
+        // Left click places the turret while building.
+        if (placementManager != null && placementManager.IsPlacing)
+            return;
+
         if (currentWeapon != null)
             currentWeapon.TriggerPressed();
     }
@@ -115,11 +130,18 @@ public class WeaponManager : MonoBehaviour
 
     private void OnShotgunSelected(InputAction.CallbackContext context)
     {
+        // 1 / 2 / 3 pick turrets while building.
+        if (placementManager != null && placementManager.IsPlacing)
+            return;
+
         EquipWeapon(shotgun);
     }
 
     private void OnMachineGunSelected(InputAction.CallbackContext context)
     {
+        if (placementManager != null && placementManager.IsPlacing)
+            return;
+
         EquipWeapon(machineGun);
     }
 

@@ -26,6 +26,11 @@ public class TurretController : MonoBehaviour
     [SerializeField] private Transform firePoint;
 
     private TargetHealth currentTarget;
+
+    public TurretType Type => turretType;
+    public float DetectionRange => detectionRange;
+    public float FireRate => fireRate;
+    public float Damage => damage;
     private float nextFireTime;
     private float nextScanTime;
 
@@ -167,7 +172,7 @@ public class TurretController : MonoBehaviour
                 hit.collider.GetComponentInParent<TargetHealth>();
 
             if (health != null && !health.IsDestroyed)
-                health.TakeDamage(damage);
+                health.TakeDamage(damage, hit.point, hit.normal);
         }
 
         Debug.DrawRay(

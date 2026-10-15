@@ -543,7 +543,7 @@ Transform:
   m_GameObject: {fileID: 292482024}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.39568, y: 2.98, z: 4.98}
+  m_LocalPosition: {x: 0.86, y: -0.43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -942,7 +942,7 @@ Transform:
   m_GameObject: {fileID: 416882521}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.39568, y: 2.98, z: 4.98}
+  m_LocalPosition: {x: 0.86, y: -0.43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1442,7 +1442,7 @@ Transform:
   m_GameObject: {fileID: 839044339}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: -4, z: -2}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2043,6 +2043,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1227408599}
   - component: {fileID: 1227408598}
+  - component: {fileID: 1227408600}
   m_Layer: 0
   m_Name: ObjectPlacementManager
   m_TagString: Untagged
@@ -2071,18 +2072,22 @@ MonoBehaviour:
   placementSurfaceLayers:
     serializedVersion: 2
     m_Bits: 64
+  maxSurfaceAngle: 35
   blockingLayers:
     serializedVersion: 2
     m_Bits: 128
   footprintHalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   footprintOffset: {x: 0, y: 0.5, z: 0}
   placementHeightOffset: 0
-  gridSnappingEnabled: 1
-  gridSize: 1
+  rotationSpeed: 120
   rotationStep: 15
   previewOpacity: 0.45
   validColor: {r: 0, g: 1, b: 0, a: 1}
   invalidColor: {r: 1, g: 0, b: 0, a: 1}
+  showRangeIndicator: 1
+  rangeIndicatorMaterial: {fileID: 0}
+  rangeIndicatorWidth: 0.06
+  rangeIndicatorSegments: 64
 --- !u!4 &1227408599
 Transform:
   m_ObjectHideFlags: 0
@@ -2098,6 +2103,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1227408600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227408597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a919eb7e1426904592b75f6cc04ae04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurretPlacementUI
+  placementManager: {fileID: 0}
+  panelColor: {r: 0.06, g: 0.06, b: 0.09, a: 0.82}
+  selectedColor: {r: 1, g: 0.62, b: 0.11, a: 1}
+  textColor: {r: 0.94, g: 0.94, b: 0.96, a: 1}
+  mutedTextColor: {r: 0.65, g: 0.66, b: 0.72, a: 1}
+  validColor: {r: 0.35, g: 0.9, b: 0.45, a: 1}
+  invalidColor: {r: 1, g: 0.38, b: 0.35, a: 1}
+  fadeSpeed: 10
+  placedMessageDuration: 1.6
 --- !u!1 &1648799467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2148,6 +2174,7 @@ MonoBehaviour:
   reloadAction: {fileID: 8091211412781387281, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   shotgunAction: {fileID: -5256368252214848184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   machineGunAction: {fileID: 160325321179513707, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  placementManager: {fileID: 0}
 --- !u!1 &1802914222
 GameObject:
   m_ObjectHideFlags: 0

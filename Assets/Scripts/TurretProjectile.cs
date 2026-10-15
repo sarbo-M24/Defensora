@@ -54,15 +54,32 @@ public class TurretProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        HandleHit(collision.collider);
+        Vector3 point = transform.position;
+        Vector3 normal = -transform.forward;
+
+        if (collision.contactCount > 0)
+        {
+            ContactPoint contact = collision.GetContact(0);
+            point = contact.point;
+            normal = contact.normal;
+        }
+
+        HandleHit(collision.collider, point, normal);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        HandleHit(other);
+        HandleHit(
+            other,
+            other.ClosestPoint(transform.position),
+            -transform.forward
+        );
     }
 
-    private void HandleHit(Collider other)
+    private void HandleHit(
+        Collider other,
+        Vector3 hitPoint,
+        Vector3 hitNormal)
     {
         if (!initialized || hasHit)
             return;
@@ -77,7 +94,7 @@ public class TurretProjectile : MonoBehaviour
             other.GetComponentInParent<TargetHealth>();
 
         if (target != null && !target.IsDestroyed)
-            target.TakeDamage(damage);
+            target.TakeDamage(damage, hitPoint, hitNormal);
 
         Destroy(gameObject);
     }
